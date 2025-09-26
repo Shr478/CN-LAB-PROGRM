@@ -1,0 +1,56 @@
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
+package socketfiletransfer1;
+
+import java.net.*;
+import java.io.*;
+import java.util.Scanner;
+/**
+ *
+ * @author Lab6
+ */
+public class SocketServer {
+
+    /**
+     * @param args the command line arguments
+     */
+    public static void main(String[] args) throws IOException{
+        // TODO code application logic here
+        ServerSocket servSocket=new ServerSocket(4000);
+        System.out.println("****Server Side*****");
+        System.out.println("server ready for connection");
+        
+        Socket connSocket=servSocket.accept();
+        System.out.println("connection is successful and ready for file transfer");
+        
+        InputStream istream=connSocket.getInputStream();
+        BufferedReader fileRead=new BufferedReader(new InputStreamReader(istream));
+        String frame=fileRead.readLine();
+        File fileName=new File(frame);
+        OutputStream ostream=connSocket.getOutputStream();
+        PrintWriter pwrite=new PrintWriter(ostream,true);
+        
+        if(fileName.exists()){
+            BufferedReader contentRead=new BufferedReader(new FileReader(frame));
+            System.out.println("writing file content in the socket");
+            String str;
+            while((str=contentRead.readLine())!=null){
+            pwrite.println(str);
+        }
+        contentRead.close();
+     }else{
+            System.out.println("Request does not exist");
+            String msg="Request file does not exist at serverside";
+            pwrite.println(msg);
+        }
+        connSocket.close();
+        servSocket.close();
+        fileRead.close();
+        pwrite.close();
+        
+}
+}
+
