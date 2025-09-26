@@ -1,0 +1,36 @@
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
+package socketfiletransfer1;
+import java.io.*;
+import java.net.*;
+import java.util.*;
+/**
+ *
+ * @author Lab6
+ */
+public class SocketClient {
+    public static void main(String[]args)throws IOException{
+        Scanner in=new Scanner(System.in);
+        Socket clientSocket=new Socket("127.0.0.1",4000);
+        System.out.println("****Clientside****");
+        System.out.println("Enter the file name to transfer: ");
+        String frame=in.nextLine();
+        OutputStream oStream=clientSocket.getOutputStream();
+        PrintWriter pwrite=new PrintWriter(oStream,true);
+        pwrite.println(frame);
+        
+        InputStream istream=clientSocket.getInputStream();
+        BufferedReader socketRead=new BufferedReader(new InputStreamReader(istream));
+        System.out.println("contents of the file "+frame+"are");
+        
+        String str;
+        while((str=socketRead.readLine())!=null){
+            System.out.println(str);
+        }
+        pwrite.close();
+        socketRead.close();
+    }
+}
